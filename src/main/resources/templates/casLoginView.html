@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout">
+
+<head>
+    <title th:text="#{cas.login.pagetitle}"></title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <script th:src="@{js/login.js}" type="text/javascript"></script>
+
+        <form method="post" id="loginForm" th:object="${credential}" onsubmit="return checkId();" role="main">
+            <fieldset>
+
+                <div th:replace="fragments/title"/>
+
+                <p class="note" th:utext="#{screen.welcome.instructions}" />
+
+                <h3 class="error" id="status" th:if="${#fields.hasErrors('*')}">
+                    <span th:each="err : ${#fields.errors('*')}" th:utext="${err}+'<br />'"></span>
+                </h3>
+
+                <p>
+                    <label for="username" id="username-label" th:utext="#{screen.welcome.label.netid}"/>
+
+                    <input class="required"
+                           id="username"
+                           size="25"
+                           type="text"
+                           th:field="*{username}"
+                           th:accesskey="#{screen.welcome.label.netid.accesskey}"
+                           autocomplete="off"
+                           autocapitalize="none"
+                           aria-required="true"
+                           aria-labelledby="username-label"/>
+                </p>
+
+                <p>
+                    <label for="password" th:utext="#{screen.welcome.label.password}"/>
+
+                    <input class="required"
+                           type="password"
+                           id="password"
+                           size="25"
+                           th:accesskey="#{screen.welcome.label.password.accesskey}"
+                           th:field="*{password}"
+                           autocomplete="off"/>
+                </p>
+
+                <p class="submit">
+                    <input type="hidden" name="execution" th:value="${flowExecutionKey}"/>
+                    <input type="hidden" name="_eventId" value="submit"/>
+                    <input type="hidden" name="geolocation"/>
+
+                    <input class="button"
+                           name="submit"
+                           accesskey="l"
+                           th:value="#{screen.welcome.button.login}"
+                           type="submit"/>
+
+                    <span class="hidden"><br/><br/></span>
+
+                    <span class='help'>
+                        <a id="showHelpText" href='#' aria-owns="helpText"><span class="forScreenReaders">Show </span>HELP<span class="forScreenReaders"> below</span></a>
+                        <a id='hideHelpText' href='#' style="display: none;">Hide HELP</a>
+                    </span>
+                </p>
+                <p>
+                    <label style="font-size: 0.8em; text-transform: uppercase; padding:0px">
+                        <a th:unless="${service != null and #strings.contains(service, 'cal.berkeley.edu')}" href="https://bpr.calnet.berkeley.edu/account-manager/passphrase/requestReset">Forgot CalNet ID or Passphrase?</a>
+                        <span th:if="${service != null and #strings.contains(service, 'cal.berkeley.edu')}">Forgot <a href="https://cal.berkeley.edu/help/id_reminder/">CalNet ID</a> or <a href="https://cal.berkeley.edu/help/reset_passphrase/">Passphrase?</a></span>
+                    </label>
+                </p>
+            </fieldset>
+
+            <div id="helpTextTop">
+
+                <div th:if="${service != null and #strings.contains(service, 'cal.berkeley.edu')}">
+                    <div id="helpText" class="help-copy" style="display: none"  aria-hidden="true" role="complementary"  tabindex="-1">
+                        <div th:include="fragments/help_messages/surrogate"/>
+                    </div>
+                    <noscript>
+                        <div class="help-copy">
+                            <div th:include="fragments/help_messages/surrogate"/>
+                        </div>
+                    </noscript>
+                </div>
+
+
+                <div th:if="${service != null and #strings.contains(service, 'calnet.berkeley.edu')}">
+                    <div id="helpText" class="help-copy" style="display: none" aria-hidden="true" role="complementary"  tabindex="-1">
+                        <div th:include="fragments/help_messages/surrogate"/>
+                        <div th:include="fragments/help_messages/calnet"/>
+                    </div>
+                    <noscript>
+                        <div class="help-copy" role="complementary">
+                            <div th:include="fragments/help_messages/surrogate"/>
+                            <div th:include="fragments/help_messages/calnet"/>
+                        </div>
+                    </noscript>
+                </div>
+
+                <div th:if="${service == null or not (#strings.contains(service, 'calnet.berkeley.edu') or #strings.contains(service, 'cal.berkeley.edu'))}">
+                    <div id="helpText" class="help-copy" style="display: none"  aria-hidden="true"  role="complementary"  tabindex="-1">
+                        <div th:include="fragments/help_messages/surrogate"/>
+                        <div th:include="fragments/help_messages/calnet_id_change"/>
+                    </div>
+                    <noscript>
+                        <div class="help-copy"  role="complementary">
+                            <div th:include="fragments/help_messages/surrogate"/>
+                            <div th:include="fragments/help_messages/calnet_id_change"/>
+                        </div>
+                    </noscript>
+                </div>
+
+            </div>
+
+        </form>
+
+        <script type="text/javascript" th:inline="javascript">
+            var i = [[#{screen.welcome.button.loginwip}]]
+            $("#fm1").submit(function() {
+                $(":submit").attr("disabled", true);
+                $(":submit").attr("value", i);
+                return true;
+            });
+        </script>
+
+    </div>
+</body>
+</html>

@@ -10,5 +10,6 @@
   "attributeReleasePolicy" : {
     "@class" : "org.apereo.cas.services.ReturnAllAttributeReleasePolicy"
   },
+  "theme": "test",
   "evaluationOrder" :   100
 }
