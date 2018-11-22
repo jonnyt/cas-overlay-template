@@ -48,7 +48,6 @@
                                        type="text"
                                        th:disabled="${guaEnabled}"
                                        th:field="*{username}"
-                                       th:accesskey="#{screen.welcome.label.netid.accesskey}"
                                        autocomplete="off"/>
                             </div>
                         </section>
@@ -62,7 +61,6 @@
                                        id="password"
                                        size="25"
                                        tabindex="2"
-                                       th:accesskey="#{screen.welcome.label.password.accesskey}"
                                        th:field="*{password}"
                                        autocomplete="off"/>
                                 <span id="capslock-on" style="display:none;">
@@ -99,7 +97,6 @@
                         <input class="btn btn-block btn-submit"
                                th:unless="${recaptchaSiteKey != null AND recaptchaInvisible != null AND recaptchaSiteKey AND recaptchaInvisible}"
                                name="submit"
-                               accesskey="l"
                                th:value="#{screen.welcome.button.login}"
                                tabindex="6"
                                type="submit"
