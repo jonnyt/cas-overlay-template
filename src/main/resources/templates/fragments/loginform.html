@@ -97,6 +97,7 @@
                         <input class="btn btn-block btn-submit"
                                th:unless="${recaptchaSiteKey != null AND recaptchaInvisible != null AND recaptchaSiteKey AND recaptchaInvisible}"
                                name="submit"
+			       id="submit"
                                th:value="#{screen.welcome.button.login}"
                                tabindex="6"
                                type="submit"
