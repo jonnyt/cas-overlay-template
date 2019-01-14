@@ -67,7 +67,7 @@
     </build>
 
     <properties>
-        <cas.version>5.3.6-SNAPSHOT</cas.version>
+        <cas.version>5.3.7</cas.version>
         <springboot.version>1.5.16.RELEASE</springboot.version>
         <!-- app.server could be -jetty, -undertow, -tomcat, or blank if you plan to provide appserver -->
         <app.server>-tomcat</app.server>
@@ -84,7 +84,7 @@
     <repositories>
         <repository>
             <id>sonatype-releases</id>
-            <url>http://oss.sonatype.org/content/repositories/releases/</url>
+            <url>https://oss.sonatype.org/content/repositories/releases/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
