@@ -7,34 +7,32 @@ ARG OVERLAY_URI=https://github.com/jonnyt/cas-overlay-template.git
 
 LABEL maintainer='Jonathon Taylor'
 LABEL version='0.1'
-LABEL description='Test CAS dockerfile'
+LABEL description='Simple CAS dockerfile with executable WAR'
 
-ENV PATH=$PATH:$JRE_HOME/bin
+ENV JAVA_HOME /usr/lib/jvm/jre
+ENV PATH $PATH:$JAVA_HOME/bin:.
 
-# Install basic tools including the openJDK
-RUN yum -y install wget tar unzip git java-1.8.0-openjdk \
+# Install JDK 8 as requirement for CAS 5.x
+RUN yum -y install git java-1.8.0-openjdk \
     && yum -y clean all
 
-# Download the CAS overlay project \
+# Download the CAS overlay project
 RUN cd / \
     && git clone --depth 1 --branch $CAS_VERSION --single-branch $OVERLAY_URI cas-overlay \
     && mkdir -p /etc/cas;
 
-# Copy our CAS config and overrides to the container
+# Copy our CAS config to the container
 COPY etc/cas/thekeystore /etc/cas/
 COPY etc/cas/config/*.* /etc/cas/config/
 COPY etc/cas/services/*.* /etc/cas/services/
 
-RUN chmod 750 cas-overlay/mvnw \
-    && chmod 750 cas-overlay/build.sh;
+RUN chmod 750 cas-overlay/mvnw
 
 EXPOSE 8080 8443
 
 WORKDIR /cas-overlay
 
-ENV JAVA_HOME /usr/lib/jvm/jre
-ENV PATH $PATH:$JAVA_HOME/bin:.
-
+# Use the default and exec profiles, mark the war as executable
 RUN ./mvnw clean package -P default,exec -T 10 \
     && chmod +x target/cas.war \
     && rm -rf /root/.m2
