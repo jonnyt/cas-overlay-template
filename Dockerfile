@@ -15,22 +15,17 @@ ENV PATH=$PATH:$JRE_HOME/bin
 RUN yum -y install wget tar unzip git java-1.8.0-openjdk \
     && yum -y clean all
 
-# Java will be here /usr/lib/jvm/jre/bin
-
 # Download the CAS overlay project \
 RUN cd / \
     && git clone --depth 1 --branch $CAS_VERSION --single-branch $OVERLAY_URI cas-overlay \
-    && mkdir -p /etc/cas \
-    && mkdir -p cas-overlay/bin;
+    && mkdir -p /etc/cas;
 
 # Copy our CAS config and overrides to the container
 COPY etc/cas/thekeystore /etc/cas/
-COPY bin/*.* cas-overlay/bin/
 COPY etc/cas/config/*.* /etc/cas/config/
 COPY etc/cas/services/*.* /etc/cas/services/
 
-RUN chmod -R 750 cas-overlay/bin \
-    && chmod 750 cas-overlay/mvnw \
+RUN chmod 750 cas-overlay/mvnw \
     && chmod 750 cas-overlay/build.sh;
 
 EXPOSE 8080 8443
