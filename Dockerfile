@@ -9,8 +9,21 @@ LABEL maintainer='Jonathon Taylor'
 LABEL version='0.1'
 LABEL description='CAS dockerfile with executable WAR using systemd'
 
+ENV container docker
 ENV JAVA_HOME /usr/lib/jvm/jre
 ENV PATH $PATH:$JAVA_HOME/bin:.
+
+# Enable systemd
+RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
+systemd-tmpfiles-setup.service ] || rm -f $i; done); \
+rm -f /lib/systemd/system/multi-user.target.wants/*;\
+rm -f /etc/systemd/system/*.wants/*;\
+rm -f /lib/systemd/system/local-fs.target.wants/*; \
+rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
+rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
+rm -f /lib/systemd/system/basic.target.wants/*;\
+rm -f /lib/systemd/system/anaconda.target.wants/*;
+VOLUME [ "/sys/fs/cgroup" ]
 
 # Install JDK 8 as requirement for CAS 5.x
 RUN yum -y install git java-1.8.0-openjdk \
@@ -27,7 +40,7 @@ COPY etc/cas/thekeystore /etc/cas/
 COPY etc/cas/config/*.* /etc/cas/config/
 COPY etc/cas/*.* /etc/cas/
 COPY etc/cas/services/*.* /etc/cas/services/
-COPY etc/cas/systemd/system/cas.service /etc/systemd/system/
+COPY etc/systemd/system/cas.service /etc/systemd/system/
 COPY etc/krb5.conf /etc/
 
 RUN chmod 750 cas-overlay/mvnw
@@ -42,4 +55,4 @@ RUN ./mvnw clean package -P default,exec -T 10 \
     && chmod +x /opt/cas/cas.war \
     && rm -rf /root/.m2
 
-CMD ["/sbin/init"]
+CMD ["/usr/sbin/init"]
