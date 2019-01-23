@@ -1,0 +1,11 @@
+[Unit]
+Description=CAS Service
+After=syslog.target network-online.target
+
+[Service]
+Environment='JAVA_OPTS=-Djava.security.auth.login.config=/etc/cas/cas-jaas.conf -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp -Djdk.tls.ephemeralDHKeySize=2048'
+ExecStart=/opt/cas/cas.war
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
