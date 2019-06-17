@@ -42,6 +42,8 @@ apply from: rootProject.file("gradle/dockerjib.gradle")
 dependencies {
     compile "org.apereo.cas:cas-server-webapp${project.appServer}:${casServerVersion}"
     // Other CAS dependencies/modules may be listed here...
+    compile "org.apereo.cas:cas-server-support-ldap:${project.'cas.version'}"
+    compile "org.apereo.cas:cas-server-support-json-service-registry:${project.'cas.version'}"
 }
 
 tasks.findByName("jibDockerBuild")

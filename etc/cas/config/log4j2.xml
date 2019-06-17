@@ -4,14 +4,14 @@
     <Properties>
         <Property name="baseDir">/var/log</Property>
 
-        <Property name="cas.log.level">info</Property>
+        <Property name="cas.log.level">debug</Property>
         <Property name="spring.webflow.log.level">warn</Property>
-        <Property name="spring.security.log.level">info</Property>
+        <Property name="spring.security.log.level">debug</Property>
         <Property name="spring.cloud.log.level">warn</Property>
         <Property name="spring.boot.admin.log.level">debug</Property>
         <Property name="spring.web.log.level">warn</Property>
         <Property name="spring.boot.log.level">warn</Property>
-        <Property name="ldap.log.level">warn</Property>
+        <Property name="ldap.log.level">debug</Property>
         <Property name="pac4j.log.level">warn</Property>
         <Property name="opensaml.log.level">warn</Property>
         <Property name="hazelcast.log.level">warn</Property>
@@ -98,7 +98,10 @@
         <AsyncLogger name="de.codecentric" level="${sys:spring.boot.admin.log.level}" includeLocation="true"/>
         <AsyncLogger name="net.jradius" level="warn" includeLocation="true" />
         <AsyncLogger name="org.openid4java" level="warn" includeLocation="true" />
-        <AsyncLogger name="org.ldaptive" level="${sys:ldap.log.level}" includeLocation="true"/>
+        <AsyncLogger name="org.ldaptive" level="${sys:ldap.log.level}" includeLocation="true">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="file"/>
+        </AsyncLogger>
         <AsyncLogger name="com.hazelcast" level="${sys:hazelcast.log.level}" includeLocation="true"/>
 
         <!-- Log audit to all root appenders, and also to audit log (additivity is not false) -->
