@@ -1,0 +1,14 @@
+{
+    /*
+   *    * Wildcard service definition that applies to any https or imaps url.
+   *       * Do not use this definition in a production environment.
+   *          */
+    "@class" :            "org.apereo.cas.services.RegexRegisteredService",
+    "serviceId" :         "^http://127.0.0.1:5000/?(.*)?",
+    "name" :              "py-sample-app",
+    "id" :                2018111602,
+    "attributeReleasePolicy" : {
+      "@class" : "org.apereo.cas.services.ReturnAllAttributeReleasePolicy"
+    },
+    "evaluationOrder" :   100
+  }

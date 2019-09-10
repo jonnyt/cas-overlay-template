@@ -1,0 +1,11 @@
+{
+  /*
+ *    * Wildcard service definition that applies to any https or imaps url.
+ *       * Do not use this definition in a production environment.
+ *          */
+  "@class" :            "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId" :         "^https://.*",
+  "name" :              "HTTPS wildcard",
+  "id" :                2018111601,
+ "evaluationOrder" :   99999
+}
