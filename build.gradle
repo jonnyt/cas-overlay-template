@@ -1,15 +1,28 @@
 buildscript {
     repositories {
         mavenLocal()
+        gradlePluginPortal()
         mavenCentral()
         jcenter()
-        maven { url "https://repo.spring.io/libs-milestone" }
-        maven { url "https://plugins.gradle.org/m2/" }
+        maven { 
+            url "https://repo.spring.io/libs-milestone" 
+            mavenContent { releasesOnly() }
+        }
+        maven { 
+            url "https://repo.spring.io/libs-snapshot" 
+            mavenContent { snapshotsOnly() }
+        }
+        maven { 
+            url "https://plugins.gradle.org/m2/" 
+            mavenContent { releasesOnly() }
+        }
     }
     dependencies {
         classpath "de.undercouch:gradle-download-task:${project.gradleDownloadTaskVersion}"
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${project.springBootVersion}"
-        classpath "gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:${project.jibVersion}"
+        classpath "com.google.cloud.tools:jib-gradle-plugin:${project.jibVersion}"
+        classpath "io.freefair.gradle:maven-plugin:${project.gradleMavenPluginVersion}"
+        classpath "io.freefair.gradle:lombok-plugin:${project.gradleLombokPluginVersion}"
     }
 }
 
@@ -17,10 +30,26 @@ repositories {
     mavenLocal()
     mavenCentral()
     jcenter()
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-    maven { url "https://build.shibboleth.net/nexus/content/repositories/releases/" }
-    maven { url "https://repo.spring.io/milestone/" }
-    maven { url "https://oss.jfrog.org/artifactory/oss-snapshot-local" }
+    maven { 
+        url "https://oss.sonatype.org/content/repositories/snapshots" 
+        mavenContent { snapshotsOnly() }
+    }
+    maven { 
+        mavenContent { releasesOnly() }
+        url "https://build.shibboleth.net/nexus/content/repositories/releases/" 
+    }
+    maven { 
+        mavenContent { releasesOnly() }
+        url "https://repo.spring.io/milestone/" 
+    }
+    maven { 
+        url "https://repo.spring.io/snapshot/" 
+        mavenContent { snapshotsOnly() }
+    }
+    maven { 
+        mavenContent { snapshotsOnly() }
+        url "https://oss.jfrog.org/artifactory/oss-snapshot-local" 
+    }
 }
 
 def casServerVersion = project.'cas.version'
@@ -29,7 +58,8 @@ def casWebApplicationBinaryName = "cas.war"
 project.ext."casServerVersion" = casServerVersion
 project.ext."casWebApplicationBinaryName" = casWebApplicationBinaryName
 
-apply from: rootProject.file("gradle/waroverlay.gradle")
+apply plugin: "io.freefair.war-overlay"
+apply plugin: "io.freefair.lombok"
 apply from: rootProject.file("gradle/tasks.gradle")
 
 apply plugin: "war"
@@ -40,13 +70,20 @@ apply from: rootProject.file("gradle/springboot.gradle")
 apply from: rootProject.file("gradle/dockerjib.gradle")
 
 dependencies {
-    compile "org.apereo.cas:cas-server-webapp${project.appServer}:${casServerVersion}"
     // Other CAS dependencies/modules may be listed here...
+<<<<<<< HEAD
     compile "org.apereo.cas:cas-server-support-ldap:${project.'cas.version'}"
     compile "org.apereo.cas:cas-server-support-json-service-registry:${project.'cas.version'}"
+=======
+    // implementation "org.apereo.cas:cas-server-support-json-service-registry:${casServerVersion}"
+>>>>>>> 1f242f276a1097863ef41adb40e9cec2ef1c0afc
 }
 
 tasks.findByName("jibDockerBuild")
+    .dependsOn(copyWebAppIntoJib, copyConfigIntoJib)
+    .finalizedBy(deleteWebAppFromJib)
+
+tasks.findByName("jib")
     .dependsOn(copyWebAppIntoJib, copyConfigIntoJib)
     .finalizedBy(deleteWebAppFromJib)
 
@@ -76,15 +113,4 @@ idea {
         downloadJavadoc = true
         downloadSources = true
     }
-}
-
-war {
-    includeWarJars = true
-    entryCompression = ZipEntryCompression.STORED
-}
-
-
-wrapper {
-    distributionType = Wrapper.DistributionType.BIN
-    gradleVersion = "${project.gradleVersion}"
 }
